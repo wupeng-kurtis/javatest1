@@ -32,21 +32,6 @@ public class RuleInfoPost extends HttpServlet {
     @Override protected void doGet(HttpServletRequest req, 
             HttpServletResponse resp) throws ServletException, IOException{
         PrintWriter out = resp.getWriter();
-     //   FileOutputStream fos = null;
-     //   BufferedWriter bw = null;
-     //   try {
-     //       File file = new File("output.txt");
-     //       fos = new FileOutputStream(file);
-     //       bw = new BufferedWriter(new OutputStreamWriter(fos));
-     //       bw.write("here");
-     //   } catch (FileNotFoundException fnfe) {
-     //       fnfe.printStackTrace();
-     //   } catch (IOException ioe) {
-     //       ioe.printStackTrace();
-     //   } finally {
-     //       if(bw != null) bw.close();
-     //       if(fos != null) fos.close();
-     //   }
         String key = req.getParameter("key");
         String descriptor=req.getParameter("descriptor");
         String rules_cnt_str=req.getParameter("rules_cnt");
@@ -165,16 +150,38 @@ public class RuleInfoPost extends HttpServlet {
         {
              sellerInfo= (SellerInfo) obj;
         }
+        if(GlobalSettings.CUR_OS==GlobalSettings.WINDOWS)
+        {
         Generator.generate(sellerInfo, GlobalSettings.app_path+"\\web\\"+key+".jpg");
-        // to Dex
+        }
+        else
+        {
+            Generator.generate(sellerInfo, "/usr/local/tomcat/webapps/QRcode/"+key+".jpg");
+        }
+// to Dex
+        String sep;
+        sep=System.getProperty("file.separator");
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println(req.getRequestURI());
+        File shit1=new File(".");
+        String shit2=shit1.getCanonicalPath();
         Runtime run = Runtime.getRuntime();
         //String cmd = "/usr/local/tomcat/webapps/QRcode/build-tools/android-4.4.2/dx --dex --output=/usr/local/tomcat/webapps/QRcode/AllSellerInfo.dex /usr/local/tomcat/webapps/QRcode/transfer/";
-        String cmd = "E:\\softwares\\Android\\sdk\\build-tools\\22.0.1\\dx.bat --dex --output=E:\\mywebcode\\mytest\\RuleInfo.dex E:\\mywebcode\\mytest\\transfer\\";
+        String cmd="";
+        if(GlobalSettings.CUR_OS==GlobalSettings.WINDOWS)
+        {
+            cmd = "E:\\softwares\\Android\\sdk\\build-tools\\22.0.1\\dx.bat --dex --output=E:\\mywebcode\\QRcode\\RuleInfo.dex E:\\mywebcode\\QRcode\\transfer\\";
+        }
+        else
+        {
+            cmd = "/usr/local/tomcat/webapps/QRcode/build-tools/android-4.4.2/dx --dex --output=/usr/local/tomcat/webapps/QRcode/AllSellerInfo.dex /usr/local/tomcat/webapps/QRcode/transfer/";
+        }
+        //String cmd = ".\\build-tools\\22.0.1\\dx.bat --dex --output=E:\\mywebcode\\mytest\\RuleInfo.dex E:\\mywebcode\\mytest\\transfer\\";
         try {
             Process p = run.exec(cmd);
             if(p.waitFor() != 0) {
                 if(p.exitValue() == 1) {
-                    System.err.println("Fail!");
+                    System.err.println("Create Dex Fail!");
                 }
             }
         } catch (Exception e) {
@@ -231,8 +238,15 @@ class RuleInfoCompiler {
 		String overider = "public int updateByUserInfo(UserInfo userInfo) { " + code + "} ";
 		String sourceCode = packageInfo+header+constructer+overider;
 		sourceCode+=func_set+"\n}";
-                
-		String path = GlobalSettings.store_path+key+".java";
+                String path="";
+                if(GlobalSettings.CUR_OS==GlobalSettings.WINDOWS)
+                {
+                    path = GlobalSettings.store_path+key+".java";
+                }
+                else
+                {
+                    path = "/usr/local/tomcat/webapps/QRcode/src/java/javaVersion/info/"+key+".java";
+                }
           
         try {  
             File f = new File(path);  
@@ -284,6 +298,8 @@ class RuleInfoCompiler {
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
             int result;
             //result = compiler.run(null, null, null, "/usr/local/tomcat/webapps/QRcode/src/javaVersion/info/"+key+".java", "-d", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes", "-classpath", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes"); 
+            if(GlobalSettings.CUR_OS==GlobalSettings.WINDOWS)
+            {
             String arg1=GlobalSettings.app_path+"\\src\\java\\javaVersion\\info\\"+key+".java";
             String arg2=GlobalSettings.app_path+"\\build\\web\\WEB-INF\\classes";
             String arg3=GlobalSettings.app_path+"\\build\\web\\WEB-INF\\classes";
@@ -296,6 +312,18 @@ class RuleInfoCompiler {
             result = compiler.run(null, null, null, "-source", "1.7", "-target", "1.7", "-d",arg1 , "-classpath", arg2, arg3); 
             //注意，用"-source", "1.8", "-target", "1.8"会在调用dx把class转为dex的时候失败，好像zxing库不支持jdk1.8，生成的1.8的class不能转为dex
             System.out.println((result == 0)?"Success":"failure");
+            }
+            else
+            {
+                // /usr/local/tomcat/webapps/QRcode/build/web/WEB-INF/classes
+            //result=compiler.run(null, null, null, "/usr/local/tomcat/webapps/QRcode/src/java/javaVersion/info/"+key+".java", "-d", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes", "-classpath", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes"); 
+            result=compiler.run(null, null, null, "/usr/local/tomcat/webapps/QRcode/src/java/javaVersion/info/"+key+".java", "-d", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes", "-classpath", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes"); 
+            System.out.println((result == 0)?"Success":"failure");
+            result = compiler.run(null, null, null, "-source", "1.7", "-target", "1.7", "-d", "/usr/local/tomcat/webapps/QRcode/transfer", "-classpath", "/usr/local/tomcat/webapps/QRcode/WEB-INF/classes", "/usr/local/tomcat/webapps/QRcode/src/java/javaVersion/info/"+key+".java"); 
+            //注意，用"-source", "1.8", "-target", "1.8"会在调用dx把class转为dex的时候失败，好像zxing库不支持jdk1.8，生成的1.8的class不能转为dex
+            System.out.println((result == 0)?"Success":"failure");
+            }
+
 
         if(result == 0) return "0";
         else return key;
