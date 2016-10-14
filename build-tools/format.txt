@@ -1,0 +1,3 @@
+run "./dx --dex --output=dst src"
+dst means the target jar file name
+src means the source jar file name

@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<style type="text/css">
+		body{margin:0;height:100%;width:100%;position:absolute;}
+		#mapContainer{height:50%;width:50%;}
+	</style>
+</head>
+<script type="text/javascript">
+var val_count=0;
+//count the '#' in context to know the number of variables
+function getValNum(){
+	var context=document.getElementById("context");
+	var str=context.value;
+    var offset=0;
+    do
+    {
+        offset=str.indexOf("#", offset);
+        if(offset!=-1)
+        {
+            val_count++;
+            offset+=1;
+        }
+    }while(offset!=-1);
+	
+    for(var i=1;i<=val_count;i++){
+		document.getElementById('values').innerHTML+="value"+i+": <input type=\"text\" id=\"showvalue"+i+"\" ><br />";
+	}
+}
+//get the value of the Altitude 
+function changeAlti(){ 
+	var num=document.getElementById("alti_scroll"); 
+	var alti_show=document.getElementById("alti_show"); 
+	alti_show.value=num.value; 
+} 
+function changeAlti2(){ 
+	var num=document.getElementById("alti_scroll2"); 
+	var alti_show=document.getElementById("alti_show2"); 
+	alti_show.value=num.value; 
+} 
+//get the value of the Light Intensity
+function changeLight(){ 
+	var num=document.getElementById("light_scroll"); 
+	var light_show=document.getElementById("light_show"); 
+	light_show.value=num.value; 
+}
+function changeLight2(){
+	var num=document.getElementById("light_scroll2");
+	var light_show=document.getElementById("light_show2");
+	light_show.value=num.value;
+}
+//get the value of the Temperature
+function changeTemp(){ 
+	var num=document.getElementById("temp_scroll"); 
+	var temp_show=document.getElementById("temp_show"); 
+	temp_show.value=num.value; 
+}
+function changeTemp2(){
+	var num=document.getElementById("temp_scroll2");
+	var temp_show=document.getElementById("temp_show2");
+	temp_show.value=num.value;
+}
+function Add_rule(){
+	var timefromval=document.getElementById("time_from"); 
+	var timetoval=document.getElementById("time_to"); 
+	var altival=document.getElementById("alti_scroll");
+	var altival2=document.getElementById("alti_scroll2");
+	var lightval=document.getElementById("light_scroll");
+	var lightval2=document.getElementById("light_scroll2");
+	var tempval=document.getElementById("temp_scroll");
+	var tempval2=document.getElementById("temp_scroll2");
+	var locaval=document.getElementById("s_city");
+	// insert a new row
+	var tbl = document.getElementById("myTable"); 
+    var obj = tbl.insertRow(tbl.rows.length);
+	obj.insertCell().innerHTML=timefromval.value;
+	obj.insertCell().innerHTML=timetoval.value;
+	obj.insertCell().innerHTML=altival.value;
+	obj.insertCell().innerHTML=altival2.value;
+	obj.insertCell().innerHTML=lightval.value;
+	obj.insertCell().innerHTML=lightval2.value;
+	obj.insertCell().innerHTML=tempval.value;
+	obj.insertCell().innerHTML=tempval2.value;
+	obj.insertCell().innerHTML=locaval.value;
+	var str="";
+	for(var i=1;i<=val_count;i++){
+		var showval=document.getElementById("showvalue"+i); 
+		str+=showval.value+" ";
+	}
+	obj.insertCell().innerHTML=str;
+}
+</script>
+<body>
+Descriptor: <input type="text" id="descriptor" form="ruleinfo"/><br /><br />
+Context: <input type="text" id="context" form="ruleinfo" onchange="getValNum()"/><br />
+<hr />
+Time Range: <input type="datetime-local" id="time_from" /> --  <input type="datetime-local" id="time_to" /><br /><br />
+Altitude: 
+<input type="range" id="alti_scroll" min="0" max="4000" step="100" value="0" onchange="changeAlti()"/>
+<input type="text" id="alti_show" size="2" disabled="disabled">
+--
+<input type="range" id="alti_scroll2" min="0" max="4000" step="100" value="0" onchange="changeAlti2()"/>
+<input type="text" id="alti_show2" size="2" disabled="disabled">
+<br /><br />
+Light Intensity:
+<input type="range" id="light_scroll" min="0" max="5000" step="100" value="0" onchange="changeLight()"/>
+<input type="text" id="light_show" size="2" disabled="disabled">
+--
+<input type="range" id="light_scroll2" min="0" max="5000" step="100" value="0" onchange="changeLight2()"/>
+<input type="text" id="light_show2" size="2" disabled="disabled">
+<br /><br />
+Temperature:
+<input type="range" id="temp_scroll" min="0" max="100" step="1" value="0" onchange="changeTemp()"/>
+<input type="text" id="temp_show" size="2" disabled="disabled">
+--
+<input type="range" id="temp_scroll2" min="0" max="100" step="1" value="0" onchange="changeTemp2()"/>
+<input type="text" id="temp_show2" size="2" disabled="disabled">
+<br /><br />
+
+
+<div class="info">
+	<div>
+	<select id="s_province" name="s_province"></select>  
+    <select id="s_city" name="s_city" ></select>  
+    <script class="resources library" src="area.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">_init_area();</script>
+    </div>
+    <div id="show"></div>
+</div>
+<script type="text/javascript">
+var Gid  = document.getElementById ;
+var showArea = function(){
+	Gid('show').innerHTML = "<h3>省" + Gid('s_province').value + " - 市" + 	
+	Gid('s_city').value + "</h3>"
+
+</script>
+
+
+<br />
+Values to show:<br />
+<div id="values"></div><br />
+<button type="button" onclick="Add_rule()" >Add rule</button>
+<hr />
+
+<!--the descriptor, context and the content in this table will be submitted-->
+<form action="RuleInfoPost" method="post" id="ruleinfo">
+<table border="1" id="myTable" name="table1">
+<caption>Rules</caption>
+<tr>
+	<th>Time start</th>
+	<th>Time end</th>
+	<th>Altitude start</th>
+	<th>Altitude end</th>
+	<th>Light start</th>
+	<th>Light end</th>
+	<th>Temperature start</th>
+	<th>Temperature end</th>
+	<th>Location</th>
+	<th>Values</th>
+</tr>
+<div id="ruletable"></div>
+</table>
+<br /><hr />
+<input type="submit" value="Submit" >
+</form>
+
+</body>
+</html>

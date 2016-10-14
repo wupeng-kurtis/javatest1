@@ -32,6 +32,21 @@ public class RuleInfoPost extends HttpServlet {
     @Override protected void doGet(HttpServletRequest req, 
             HttpServletResponse resp) throws ServletException, IOException{
         PrintWriter out = resp.getWriter();
+     //   FileOutputStream fos = null;
+     //   BufferedWriter bw = null;
+     //   try {
+     //       File file = new File("output.txt");
+     //       fos = new FileOutputStream(file);
+     //       bw = new BufferedWriter(new OutputStreamWriter(fos));
+     //       bw.write("here");
+     //   } catch (FileNotFoundException fnfe) {
+     //       fnfe.printStackTrace();
+     //   } catch (IOException ioe) {
+     //       ioe.printStackTrace();
+     //   } finally {
+     //       if(bw != null) bw.close();
+     //       if(fos != null) fos.close();
+     //   }
         String key = req.getParameter("key");
         String descriptor=req.getParameter("descriptor");
         String rules_cnt_str=req.getParameter("rules_cnt");

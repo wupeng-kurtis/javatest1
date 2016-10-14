@@ -12,6 +12,9 @@ package Settings;
  */
 public class GlobalSettings {
     //public final static String store_path="/usr/local/tomcat/webapps/QRcode/src/javaVersion/info/";
-    public final static String store_path="E:\\mywebcode\\mytest\\src\\java\\javaVersion\\info\\";
-    public final static String app_path="E:\\mywebcode\\mytest";
+    public final static int WINDOWS=1;
+    public final static int LINUX=0;
+    public final static int CUR_OS=LINUX;
+    public final static String store_path="E:\\mywebcode\\QRcode\\src\\java\\javaVersion\\info\\";
+    public final static String app_path="E:\\mywebcode\\QRcode";
 }

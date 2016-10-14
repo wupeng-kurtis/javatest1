@@ -1,11 +1,7 @@
 package javaVersion.info; 
 import java.util.TreeMap;
 public class asd extends SellerInfo { public asd() { super( "asd", "asd");} public int updateByUserInfo(UserInfo userInfo) { 
-varList.add("2015-04-30T22:22&2015-05-01T22:02&0&0&0&µÿº∂ –&");
-varList.add("2015-04-30T22:22&2015-05-01T22:02&0&0&0&µÿº∂ –&");
-varList.add("2015-04-30T22:22&2015-05-01T22:02&0&0&0&µÿº∂ –&");
-varList.add("2015-04-30T22:22&2015-05-01T22:02&0&0&0&µÿº∂ –&");
-varList.add("2015-04-30T22:22&2015-05-01T22:02&0&0&0&µÿº∂ –&");
+varList.add("Any&Any&1&0&0&ÂçóÈò≥Â∏Ç&");
 return 0;
 } 
 }
